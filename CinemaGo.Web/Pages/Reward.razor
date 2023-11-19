@@ -1,0 +1,122 @@
+﻿@page "/reward"
+
+@using CinemaGo.DataModels.CustomModels;
+
+@using CinemaGo.Web.Services;
+
+@inject ProtectedSessionStorage sessionStorage;
+
+@inject IUserPanelService userPanelService
+
+@inject NavigationManager navManager;
+
+<style>
+    
+    input[type=radio] {
+        border: 0px;
+        width: 20%;
+        height: 1em;
+    }
+</style>
+<h3>Reward</h3>
+
+<div class="reward">
+    <table>
+        <tr>
+            <td>Cinema Type</td>
+            <td>
+                <div style=" text-align : left; margin:0px;">
+                    <EditForm Model="cinematypeModel">
+                        <InputRadioGroup @bind-Value="cinematypeModel.Name">
+                            @foreach (var option in rdOptions)
+                            {
+                                <InputRadio Value="option" /> @option <br />
+                            }
+                        </InputRadioGroup>
+                    </EditForm>
+                </div>
+            </td>
+        </tr>
+
+    </table>
+    @if (cinematypeModel.Name == "GSC")
+    {
+        <div class="container text-center">
+            <div class="row">
+                <div class="col col-md-4">
+                    <a href="https://epaymentwebapp.gsc.com.my/login" target="_blank">
+                        <img src="https://i.ibb.co/gvpqhDg/GSC-JOM-Rewards.png">
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="container text-center">
+            <div class="col col-md-4">
+                <a href="https://eticket.gsc.com.my/sign" target="_blank">
+                    <img src="https://i.ibb.co/xhLdvWj/Gsc-Rewards.png">
+                </a>
+            </div>
+        </div>
+    }
+    else if (cinematypeModel.Name == "TGV")
+    {
+        <div class="container text-center">
+            <div class="col col-md-4">
+                <a href="https://www.tgv.com.my/promotions/all-year-long-deals-more-savings-more-movies" target="_blank">
+                    <img src="https://i.ibb.co/YTvjM6D/a89073fa-88b5-48f0-aa22-d8cf94ec7a84-original.jpg"  >
+                </a>
+            </div>
+        </div>
+    }
+    else if (cinematypeModel.Name == "MBO")
+    {
+        <div class="container text-center">
+            <div class="col col-md-4">
+                <a href="https://mbocinemas.com/Browsing/Loyalty/Clubs/1" target="_blank">
+                    <img src="https://i.ibb.co/rZf3KMh/mbo.png" >
+                </a>
+            </div>
+        </div>
+    }
+    else if (cinematypeModel.Name == "LFS")
+    {
+        <div class="container text-center">
+            <div class="col col-md-4">
+                <a href="https://www.lfs.com.my/Promotion" target="_blank">
+                    <img src="https://i.ibb.co/26CPk48/promotion-web-923.jpg" style="height:800px;width:800px;" >
+                </a>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+
+    [CascadingParameter]
+    public EventCallback notify { get; set; }
+    public string cinematypeMode { get; set; }
+
+    protected override Task OnInitializedAsync()
+    {
+
+        cinematypeMode = "GSC";
+        return base.OnInitializedAsync();
+    }
+
+    CinemaTypeModeModel cinematypeModel = new CinemaTypeModeModel()
+    {
+        Name = "GSC"// default value
+    };
+
+    List<string> rdOptions = new List<string> { "GSC", "TGV", "MBO", "LFS" };
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await notify.InvokeAsync();
+        }
+
+    }
+
+}

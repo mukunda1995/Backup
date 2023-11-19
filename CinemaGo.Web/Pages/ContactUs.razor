@@ -1,0 +1,212 @@
+﻿@page "/contactus"
+
+@using CinemaGo.DataModels.CustomModels;
+@using CinemaGo.Web.Services;
+@inject IUserPanelService userPanelService;
+@inject ProtectedSessionStorage sessionStorage;
+@inject NavigationManager navManager;
+@*<div class=" container-mt-5 ">
+        <h1>Contact Us!</h1>
+        <form class=" row g-3 ">
+            <div class=" col-md-6">
+                <label for=" FirstName" class=" form-label ">First Name</label>
+                <input type="text" class="form-control" id="FirstName" required>
+            </div>
+            <div class=" col-md-6">
+                <label for=" LastName" class=" form-label ">Last Name</label>
+                <input type="text" class=" form-control" id="LastName" required>
+            </div>
+            <div class=" col-md-8">
+                <label for=" Email" class=" form-label ">E-mail</label>
+                <input type="email" class=" form-control" id="Email" required>
+            </div>
+            <div class=" col-md-4">
+                <label for=" PhoneNumber" class=" form-label ">Phone Number</label>
+                <input type="text" class=" form-control" id="PhoneNumber" placeholder="(0124444444) ">
+            </div>
+            <div class=" col-md-12">
+                <label for=" comments" class=" form-label ">Comments & Reviews?</label>
+                <textarea class=" form-control " id="Comments" rows=" 4" required></textarea>
+            </div>
+
+            <div class=" col-md-12">
+                <br />
+                <button type="submit" class=" btn btn-primary ">Submit</button>
+
+            </div>
+
+        </form>
+
+    </div>
+    <br />*@
+
+<style>
+    .modal {
+        position: fixed;
+        z-index: 1;
+        padding-top: 100px;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background-color: rgb(0,0,0);
+        background-color: rgba(0,0,0,0.4);
+        display: block;
+    }
+
+    .modal-content {
+        background-color: #fefefe;
+        margin: auto;
+        padding: 20px;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 50%;
+        overflow: hidden;
+    }
+
+    .close {
+        color: #aaaaaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+</style>
+
+@if (contactModel == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="card">
+        <h4 class="card-header">Contact US</h4>
+
+        <div class="card-body">
+            <EditForm Model="@contactModel" OnValidSubmit="SaveContact">
+                <DataAnnotationsValidator />
+                <div class="form-row">
+                    <div class="form-group col-5">
+                        <label>First Name :</label>
+                        <InputText @bind-Value="contactModel.FirstName" class="form-control" />
+                        <ValidationMessage For="@(() => contactModel.FirstName)" />
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-5">
+                        <label>Last Name :</label>
+                        <InputText @bind-Value="contactModel.LastName" class="form-control" />
+                        <ValidationMessage For="@(() => contactModel.LastName)" />
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-5">
+                        <label>Email :</label>
+                        <InputText @bind-Value="contactModel.Email" class="form-control" />
+                        <ValidationMessage For="@(() => contactModel.Email)" />
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-5">
+                        <label>Phone Number :</label>
+                        <InputText @bind-Value="contactModel.PhoneNumber" class="form-control" />
+                        <ValidationMessage For="@(() => contactModel.PhoneNumber)" />
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-5">
+                        <label>Comment :</label>
+                        <InputText @bind-Value="contactModel.Comment" class="form-control" />
+                        <ValidationMessage For="@(() => contactModel.Comment)" />
+                    </div>
+                </div>
+                <textarea class=" form-control " id="Comments" rows=" 4" required></textarea>
+                <div class="text-left">
+                    <input type="submit" class="btn btn-primary" value="Save" />
+                    <input type="button" class="btn btn-primary" value="Clear" @onclick="ClearForm" />
+                </div>
+            </EditForm>
+
+        </div>
+    </div>
+}
+
+
+
+@code {
+    [CascadingParameter]
+    public EventCallback notify { get; set; }
+    public ContactModel contactModel { get; set; }
+
+    public List<ContactModel> contactList { get; set; }
+
+    public ContactModel contactToUpdate { get; set; }
+
+    public ContactModel contactToDelete { get; set; }
+
+    public bool showEditPopup = false;
+
+    public bool showDeletePopup = false;
+
+    public bool successPopup = false;
+
+    public string Message = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        contactModel = new ContactModel();
+        await GetContacts();
+
+    }
+
+    private async Task SaveContact()
+    {
+        await userPanelService.SaveContact(contactModel);
+        Message = "Messege Added Successfully !";
+        ToggleSuccessPopup();
+        contactModel = new ContactModel();
+        await GetContacts();
+    }
+
+    private async Task GetContacts()
+    {
+        contactList = await userPanelService.GetContacts();
+    }
+
+    private void ClearForm()
+    {
+        contactModel = new ContactModel();
+    }
+
+    private void ToggleEditPopup()
+    {
+        showEditPopup = showEditPopup == true ? false : true;
+    }
+
+    private void ToggleDeletePopup()
+    {
+        showDeletePopup = showDeletePopup == true ? false : true;
+    }
+
+    private void ToggleSuccessPopup()
+    {
+        successPopup = successPopup == true ? false : true;
+    }
+
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await notify.InvokeAsync();
+        }
+
+    }
+}

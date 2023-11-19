@@ -1,0 +1,225 @@
+﻿@page "/product/{name}"
+
+
+@using CinemaGo.DataModels.CustomModels;
+@using CinemaGo.Web.Services;
+@inject IUserPanelService userPanelService;
+@inject ProtectedSessionStorage sessionStorage;
+@inject NavigationManager navManager;
+
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        .column {
+            float: left;
+            width: 33.33%;
+            padding: 5px;
+        }
+
+        /* Clearfix (clear floats) */
+        .row::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+    </style>
+
+    <br />
+    <p class="text-center" style="text-decoration-line:underline;font-size:100px"  >Movie Booking</p>
+    <h2 style="text-decoration-line:underline">Selected Movie</h2>
+    <div class="media-body align-content-start ">
+
+
+
+        <div class="card-body">
+            @if (productList == null)
+            {
+                <p><em>Loading...</em></p>
+            }
+            else
+            {
+        <ul class="list-unstyled">
+            @foreach (var (index, prod) in productList.Select((prod, i) => (i + 1, prod)))
+            {
+                if (@prod.Name == @Name)
+                {
+                    <li class="media my-3">
+                        <div class="container mt-5 ">
+                            <form class=" row g-3 ">
+                                <div class=" col-md-3">
+                                    <div class="media-img-wrapper mr-3">
+
+                                        <img class="media-img" src="http://localhost:36313/@prod.ImageUrl" alt="@prod.Name" />
+
+                                    </div>
+                                </div>
+                                <div class=" col-md-9">
+                                    <div class="media-body align-content-start ">
+                                        <b>Title </b>
+                                        <br>
+                                        @prod.Name
+                                        <br>
+                                        <b>Description </b>
+                                        <br>
+                                        @prod.Description
+                                        <br>
+                                        <b>Release Date </b>
+                                        <br>
+                                        @prod.ReleaseDate
+                                        <br>
+                                        <b>Language </b>
+                                        <br>
+                                        @prod.Language
+                                        <br>
+                                        <b>Running Time </b>
+                                        <br>
+                                        @prod.RunningTime
+                                        <br>
+                                        <p><a href="@prod.TrailerUrl" class="link-info link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" target="_blank">[Trailer]</a></p>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </li>
+                    <li>
+                        <h2 style="text-decoration-line:underline">Select Seat</h2>
+                        <CinemaGo.Web.Pages.SelectSeat />
+                        <br />
+                        <h2 style="text-decoration-line:underline">Select Seat Type</h2>
+                        <CinemaGo.Web.Components.SeatType />
+                        <br />
+                        <div class="container text-center">
+                            <a href="/mycart" @onclick="(() => AddToCart_Click(prod))">
+                                <br />
+                                <span style="font-size:30px; vertical-align:central; padding:7px; color:black; border-radius:100%; padding-top:10px;font-weight:bold; border:solid"><sup>Book Now</sup></span>
+                            </a>
+
+                        </div>
+                    </li>
+                    
+                }
+            }
+        </ul>
+            }
+        </div>
+
+    </div>
+
+
+    @code {
+        [Parameter]
+        public string Name { get; set; }
+        [CascadingParameter]
+        public EventCallback notify { get; set; }
+        public ProductModel productModel { get; set; }
+        public List<ProductModel> productList { get; set; }
+        public int prodSelected;
+        public List<CartModel> myCart { get; set; }
+        public bool cartFlag = false;
+
+        protected override async Task OnInitializedAsync()
+        {
+            productModel = new ProductModel();
+            await GetProducts();
+        }
+
+        private async Task GetProducts()
+        {
+            productList = await userPanelService.GetProducts();
+        }
+
+        private async Task AddToCart_Click(ProductModel productClicked)
+        {
+            cartFlag = true;
+
+            var result = await sessionStorage.GetAsync<List<CartModel>>("myCart");
+
+
+            if (!result.Success)
+            {
+                myCart = new List<CartModel>();
+
+                if (productClicked.CartFlag)
+                {
+                    var existing_product = myCart.Where(x => x.ProductId == productClicked.Id).FirstOrDefault();
+                    if (existing_product != null)
+                    {
+                        myCart.Remove(existing_product);
+                        await sessionStorage.SetAsync("myCart", myCart);
+
+                    }
+                }
+                else
+                {
+
+                    CartModel cm = new CartModel();
+
+                    cm.ProductId = productClicked.Id;
+
+                    cm.Quantity = 1;
+                    cm.AvailableStock = Convert.ToInt32(productClicked.Stock);
+
+                    cm.ProductName = productClicked.Name;
+
+                    cm.ProductImage = productClicked.ImageUrl;
+
+                    cm.Price = Convert.ToInt32(productClicked.Price);
+
+                    myCart.Add(cm);
+
+                    await sessionStorage.SetAsync("myCart", myCart);
+                }
+            }
+            else
+            {
+                myCart = result.Value;
+                if (productClicked.CartFlag)
+                {
+                    var existing_product = myCart.Where(x => x.ProductId == productClicked.Id).FirstOrDefault();
+                    if (existing_product != null)
+                    {
+                        myCart.Remove(existing_product);
+                        await sessionStorage.SetAsync("myCart", myCart);
+                    }
+                }
+                else
+                {
+
+                    CartModel cm = new CartModel();
+
+                    cm.ProductId = productClicked.Id;
+
+                    cm.Quantity = 1;
+                    cm.AvailableStock = Convert.ToInt32(productClicked.Stock);
+
+                    cm.ProductName = productClicked.Name;
+
+                    cm.ProductImage = productClicked.ImageUrl;
+
+                    cm.Price = Convert.ToInt32(productClicked.Price);
+
+                    myCart.Add(cm);
+
+                    await sessionStorage.SetAsync("myCart", myCart);
+                }
+            }
+            await notify.InvokeAsync();
+        }
+
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (firstRender)
+            {
+                var result = await sessionStorage.GetAsync<List<CartModel>>("myCart");
+                if (result.Success)
+                {
+                    cartFlag = true;
+                }
+            }
+
+        }
+
+    }

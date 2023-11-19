@@ -1,0 +1,37 @@
+﻿@page "/"
+@inject NavigationManager navManager;
+@inject ProtectedSessionStorage sessionStorage;
+
+@if (IsAdminLoggedIn == true)
+{
+    <CinemaGo.Admin.Pages.Message />
+}
+
+
+@code
+{
+    [CascadingParameter]
+    public EventCallback notify { get; set; }
+
+    public bool IsAdminLoggedIn = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await notify.InvokeAsync();
+
+            var adminSession = await sessionStorage.GetAsync<string>("adminKey");
+            if (adminSession.Success)
+            {
+                IsAdminLoggedIn = true;
+                StateHasChanged();
+            }
+            else
+            {
+                navManager.NavigateTo("/login");
+
+            }
+        }
+    }
+}

@@ -1,0 +1,19 @@
+﻿@page "/"
+@using CinemaGo.DataModels.CustomModels;
+@using CinemaGo.Web.Services;
+@inject IUserPanelService userPanelService;
+@inject ProtectedSessionStorage sessionStorage;
+@inject NavigationManager navManager;
+
+
+
+    <img src="./images/homelogo.png" class="img-fluid" style="width:100%; height:200px" />
+    <CinemaGo.Web.Components.DisplayAllContent />
+
+
+
+
+
+@code {
+    
+}
