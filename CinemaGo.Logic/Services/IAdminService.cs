@@ -18,6 +18,7 @@ namespace CinemaGo.Logic.Services
         bool DeleteCategory(CategoryModel categoryToDelete);
         List<ProductModel> GetProducts();
         bool DeleteProduct(ProductModel productToDelete);
+        bool UpdateProduct(ProductModel productToUpdate);
         int GetNewProductId();
         ProductModel SaveProduct(ProductModel newProduct);
         List<StockModel> GetProductStock();

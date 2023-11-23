@@ -6,9 +6,7 @@
 @inject IUserPanelService userPanelService;
 @inject ProtectedSessionStorage sessionStorage;
 @inject NavigationManager navManager;
-
-
-    <style>
+@*<style>
         * {
             box-sizing: border-box;
         }
@@ -25,201 +23,375 @@
             clear: both;
             display: table;
         }
-    </style>
+    </style>*@
+<style>
+    .cinema-seats {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
 
-    <br />
-    <p class="text-center" style="text-decoration-line:underline;font-size:100px"  >Movie Booking</p>
-    <h2 style="text-decoration-line:underline">Selected Movie</h2>
-    <div class="media-body align-content-start ">
+    .seat-row {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 5px;
+    }
+
+    .seat {
+        margin: 2px;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        background-color: #f0f0f0;
+        cursor: pointer;
+    }
+
+    .selected {
+        background-color: #a0e0a0;
+    }
+
+    .alredyBooked {
+        background-color: red;
+    }
+</style>
+
+<br />
+<p class="text-center" style="text-decoration-line:underline;font-size:100px">Movie Booking</p>
+<h2 style="text-decoration-line:underline">Selected Movie</h2>
+<div class="media-body align-content-start ">
 
 
 
-        <div class="card-body">
-            @if (productList == null)
-            {
-                <p><em>Loading...</em></p>
-            }
-            else
-            {
-        <ul class="list-unstyled">
-            @foreach (var (index, prod) in productList.Select((prod, i) => (i + 1, prod)))
-            {
-                if (@prod.Name == @Name)
+    <div class="card-body">
+        @if (productList == null)
+        {
+            <p><em>Loading...</em></p>
+        }
+        else
+        {
+            <ul class="list-unstyled">
+                @foreach (var (index, prod) in productList.Select((prod, i) => (i + 1, prod)))
                 {
-                    <li class="media my-3">
-                        <div class="container mt-5 ">
-                            <form class=" row g-3 ">
-                                <div class=" col-md-3">
-                                    <div class="media-img-wrapper mr-3">
+                    if (@prod.Name == @Name)
+                    {
+                        <li class="media my-3">
+                            <div class="container mt-5 ">
+                                <form class=" row g-3 ">
+                                    <div class=" col-md-3">
+                                        <div class="media-img-wrapper mr-3">
 
-                                        <img class="media-img" src="http://localhost:36313/@prod.ImageUrl" alt="@prod.Name" />
+                                            <img class="media-img" src="http://localhost:36313/@prod.ImageUrl" alt="@prod.Name" />
 
+                                        </div>
                                     </div>
-                                </div>
-                                <div class=" col-md-9">
-                                    <div class="media-body align-content-start ">
-                                        <b>Title </b>
-                                        <br>
-                                        @prod.Name
-                                        <br>
-                                        <b>Description </b>
-                                        <br>
-                                        @prod.Description
-                                        <br>
-                                        <b>Release Date </b>
-                                        <br>
-                                        @prod.ReleaseDate
-                                        <br>
-                                        <b>Language </b>
-                                        <br>
-                                        @prod.Language
-                                        <br>
-                                        <b>Running Time </b>
-                                        <br>
-                                        @prod.RunningTime
-                                        <br>
-                                        <p><a href="@prod.TrailerUrl" class="link-info link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" target="_blank">[Trailer]</a></p>
+                                    <div class=" col-md-9">
+                                        <div class="media-body align-content-start ">
+                                            <b>Title </b>
+                                            <br>
+                                            @prod.Name
+                                            <br>
+                                            <b>Description </b>
+                                            <br>
+                                            @prod.Description
+                                            <br>
+                                            <b>Release Date </b>
+                                            <br>
+                                            @prod.ReleaseDate
+                                            <br>
+                                            <b>Language </b>
+                                            <br>
+                                            @prod.Language
+                                            <br>
+                                            <b>Running Time </b>
+                                            <br>
+                                            @prod.RunningTime
+                                            <br>
+                                            <b>Status </b>
+                                            <br>
+                                            @prod.Status
+                                            <br>
+                                            <p><a href="@prod.TrailerUrl" class="link-info link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" target="_blank">[Trailer]</a></p>
+
+                                        </div>
                                     </div>
-                                </div>
-                            </form>
-                        </div>
-                    </li>
-                    <li>
-                        <h2 style="text-decoration-line:underline">Select Seat</h2>
-                        <CinemaGo.Web.Pages.SelectSeat />
-                        <br />
-                        <h2 style="text-decoration-line:underline">Select Seat Type</h2>
-                        <CinemaGo.Web.Components.SeatType />
-                        <br />
-                        <div class="container text-center">
-                            <a href="/mycart" @onclick="(() => AddToCart_Click(prod))">
+                                </form>
+                            </div>
+                        </li>
+                        <li>
+                            <h2 style="text-decoration-line:underline">Select Seat</h2>
+                            <div class="screen">
                                 <br />
-                                <span style="font-size:30px; vertical-align:central; padding:7px; color:black; border-radius:100%; padding-top:10px;font-weight:bold; border:solid"><sup>Book Now</sup></span>
-                            </a>
+                                <h3 class="text-center">! SCREEN !</h3>
+                            </div>
 
-                        </div>
-                    </li>
-                    
+
+                            <h1>@selectedSEAT</h1>
+                            <h1>@prod.Status</h1>
+
+
+
+
+                            <div class="cinema-seats">
+                                @for (int row = 1; row <= 6; row++)
+                                {
+                                    takenSeats = prod.Status;
+                                    <div class="seat-row">
+                                        @for (int seat = 1; seat <= 22; seat++)
+                                        {
+                                            if (seat == 6)
+                                            {
+                                                <h1>&nbsp&nbsp&nbsp</h1> }
+                                            if (seat == 16)
+                                            {
+                                                <h1>&nbsp&nbsp&nbsp</h1> }
+                                            int currentRow = row;
+                                            int currentSeat = seat;
+                                            seatNumber = ((row - 1) * 22) + seat;
+
+                                            string[] seatsArray = takenSeats.Split(',');
+
+                                            List<int> seatsList = new List<int>();
+                                            @foreach (string seatT in seatsArray)
+                                            {
+                                                if (int.TryParse(seatT.Trim(), out int seatNumber))
+                                                {
+                                                    seatsList.Add(seatNumber);
+                                                }
+                                                else
+                                                {
+                                                    // Handle the case where the string is not a valid integer
+                                                    Console.WriteLine($"'{seat}' is not a valid seat number.");
+                                                }
+                                            } int[] seatsIntArray = seatsList.ToArray();
+
+
+
+
+
+                                            isSeatTaken = seatsIntArray.Contains(seatNumber);
+
+                                            if (isSeatTaken)
+                                            {
+                                                selectedSeat = (row, seat);
+                                                <button disabled class="@(IsSeatSelected(currentRow, currentSeat) ? "alredyBooked" : "seat")" @onclick="() => SelectSeat(currentRow, currentSeat)">
+                                                    @if (currentRow == 1)
+                                                    {
+                                                        <h5>@currentSeat A</h5> }
+                                                    else if (currentRow == 2)
+                                                    {
+                                                        <h5>@currentSeat B</h5> }
+                                                    else if (currentRow == 3)
+                                                    {
+                                                        <h5>@currentSeat C</h5> }
+                                                    else if (currentRow == 4)
+                                                    {
+                                                        <h5>@currentSeat D</h5> }
+                                                    else if (currentRow == 5)
+                                                    {
+                                                        <h5>@currentSeat E</h5> }
+                                                    else
+                                                    {
+                                                        <h5>@currentSeat F</h5>}
+                                                </button> }
+                                            else
+                                            {
+                                                <button class="@(IsSeatSelected(currentRow, currentSeat) ? "selected" : "seat")" @onclick="() => SelectSeat(currentRow, currentSeat)">
+                                                    @if (currentRow == 1)
+                                                    {
+                                                        <h5>@currentSeat A</h5> }
+                                                    else if (currentRow == 2)
+                                                    {
+                                                        <h5>@currentSeat B</h5> }
+                                                    else if (currentRow == 3)
+                                                    {
+                                                        <h5>@currentSeat C</h5> }
+                                                    else if (currentRow == 4)
+                                                    {
+                                                        <h5>@currentSeat D</h5> }
+                                                    else if (currentRow == 5)
+                                                    {
+                                                        <h5>@currentSeat E</h5> }
+                                                    else
+                                                    {
+                                                        <h5>@currentSeat F</h5>}
+
+                                                </button>}
+
+
+                                        }
+                                    </div>}
+                            </div>
+                            <button @onclick="AddSeat">BOOK THE SEAT</button>
+                            <h1>@testingShow</h1>
+
+                            @*<br />
+        <h2 style="text-decoration-line:underline">Select Seat Type</h2>
+        <CinemaGo.Web.Components.SeatType />
+        <br />*@
+                            <div class="container text-center">
+                                <a href="/mycart" @onclick="(() => AddToCart_Click(prod))">
+                                    <br />
+                                    <span style="font-size:30px; vertical-align:central; padding:7px; color:black; border-radius:100%; padding-top:10px;font-weight:bold; border:solid"><sup>Book Now</sup></span>
+                                </a>
+
+                            </div>
+
+                        </li>
+
+                    }
                 }
-            }
-        </ul>
-            }
-        </div>
-
+            </ul>
+        }
     </div>
 
+</div>
 
-    @code {
-        [Parameter]
-        public string Name { get; set; }
-        [CascadingParameter]
-        public EventCallback notify { get; set; }
-        public ProductModel productModel { get; set; }
-        public List<ProductModel> productList { get; set; }
-        public int prodSelected;
-        public List<CartModel> myCart { get; set; }
-        public bool cartFlag = false;
 
-        protected override async Task OnInitializedAsync()
+@code {
+    [Parameter]
+    public string Name { get; set; }
+    [CascadingParameter]
+    public EventCallback notify { get; set; }
+    public ProductModel productModel { get; set; }
+    public List<ProductModel> productList { get; set; }
+    public int prodSelected;
+    public List<CartModel> myCart { get; set; }
+    public bool cartFlag = false;
+
+    public string testingShow = "testing";
+
+    private string selectedSeatText = "Select a seat";
+    private (int row, int seat)? selectedSeat;
+    private int seatNumber;
+    private int selectedSEAT;
+    private string takenSeats;
+
+    private void AddSeat()
+    {
+        takenSeats += $",{selectedSEAT}";
+        testingShow = takenSeats;
+       
+    }
+
+
+    private bool isSeatTaken = false;
+
+    void SelectSeat(int row, int seat)
+    {
+        selectedSeat = (row, seat);
+        selectedSeatText = $"Selected Row {row}, Seat {seat}";
+        selectedSEAT = ((row - 1) * 22) + seat;
+    }
+
+
+
+    private bool IsSeatSelected(int row, int seat)
+    {
+        return selectedSeat.HasValue && selectedSeat.Value.row == row && selectedSeat.Value.seat == seat;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        productModel = new ProductModel();
+        await GetProducts();
+    }
+
+    private async Task GetProducts()
+    {
+        productList = await userPanelService.GetProducts();
+    }
+
+    private async Task AddToCart_Click(ProductModel productClicked)
+    {
+        cartFlag = true;
+
+        var result = await sessionStorage.GetAsync<List<CartModel>>("myCart");
+
+
+        if (!result.Success)
         {
-            productModel = new ProductModel();
-            await GetProducts();
-        }
+            myCart = new List<CartModel>();
 
-        private async Task GetProducts()
-        {
-            productList = await userPanelService.GetProducts();
-        }
-
-        private async Task AddToCart_Click(ProductModel productClicked)
-        {
-            cartFlag = true;
-
-            var result = await sessionStorage.GetAsync<List<CartModel>>("myCart");
-
-
-            if (!result.Success)
+            if (productClicked.CartFlag)
             {
-                myCart = new List<CartModel>();
-
-                if (productClicked.CartFlag)
+                var existing_product = myCart.Where(x => x.ProductId == productClicked.Id).FirstOrDefault();
+                if (existing_product != null)
                 {
-                    var existing_product = myCart.Where(x => x.ProductId == productClicked.Id).FirstOrDefault();
-                    if (existing_product != null)
-                    {
-                        myCart.Remove(existing_product);
-                        await sessionStorage.SetAsync("myCart", myCart);
+                    myCart.Remove(existing_product);
+                    await sessionStorage.SetAsync("myCart", myCart);
 
-                    }
                 }
-                else
+            }
+            else
+            {
+
+                CartModel cm = new CartModel();
+
+                cm.ProductId = productClicked.Id;
+
+                cm.Quantity = 1;
+                cm.ProductStatus = productClicked.Status;
+                cm.AvailableStock = Convert.ToInt32(productClicked.Stock);
+
+                cm.ProductName = productClicked.Name;
+
+                cm.ProductImage = productClicked.ImageUrl;
+
+                cm.Price = Convert.ToInt32(productClicked.Price);
+
+                myCart.Add(cm);
+
+                await sessionStorage.SetAsync("myCart", myCart);
+            }
+        }
+        else
+        {
+            myCart = result.Value;
+            if (productClicked.CartFlag)
+            {
+                var existing_product = myCart.Where(x => x.ProductId == productClicked.Id).FirstOrDefault();
+                if (existing_product != null)
                 {
-
-                    CartModel cm = new CartModel();
-
-                    cm.ProductId = productClicked.Id;
-
-                    cm.Quantity = 1;
-                    cm.AvailableStock = Convert.ToInt32(productClicked.Stock);
-
-                    cm.ProductName = productClicked.Name;
-
-                    cm.ProductImage = productClicked.ImageUrl;
-
-                    cm.Price = Convert.ToInt32(productClicked.Price);
-
-                    myCart.Add(cm);
-
+                    myCart.Remove(existing_product);
                     await sessionStorage.SetAsync("myCart", myCart);
                 }
             }
             else
             {
-                myCart = result.Value;
-                if (productClicked.CartFlag)
-                {
-                    var existing_product = myCart.Where(x => x.ProductId == productClicked.Id).FirstOrDefault();
-                    if (existing_product != null)
-                    {
-                        myCart.Remove(existing_product);
-                        await sessionStorage.SetAsync("myCart", myCart);
-                    }
-                }
-                else
-                {
 
-                    CartModel cm = new CartModel();
+                CartModel cm = new CartModel();
 
-                    cm.ProductId = productClicked.Id;
+                cm.ProductId = productClicked.Id;
+                cm.ProductStatus = productClicked.Status;
 
-                    cm.Quantity = 1;
-                    cm.AvailableStock = Convert.ToInt32(productClicked.Stock);
+                cm.Quantity = 1;
+                cm.AvailableStock = Convert.ToInt32(productClicked.Stock);
 
-                    cm.ProductName = productClicked.Name;
+                cm.ProductName = productClicked.Name;
 
-                    cm.ProductImage = productClicked.ImageUrl;
+                cm.ProductImage = productClicked.ImageUrl;
 
-                    cm.Price = Convert.ToInt32(productClicked.Price);
+                cm.Price = Convert.ToInt32(productClicked.Price);
 
-                    myCart.Add(cm);
+                myCart.Add(cm);
 
-                    await sessionStorage.SetAsync("myCart", myCart);
-                }
+                await sessionStorage.SetAsync("myCart", myCart);
             }
-            await notify.InvokeAsync();
         }
+        await notify.InvokeAsync();
+    }
 
-        protected override async Task OnAfterRenderAsync(bool firstRender)
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
         {
-            if (firstRender)
+            var result = await sessionStorage.GetAsync<List<CartModel>>("myCart");
+            if (result.Success)
             {
-                var result = await sessionStorage.GetAsync<List<CartModel>>("myCart");
-                if (result.Success)
-                {
-                    cartFlag = true;
-                }
+                cartFlag = true;
             }
-
         }
 
     }
+
+}

@@ -112,13 +112,15 @@ using CinemaGo.Web.Services;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 235 "C:\Users\mukunda\Desktop\New folder\CinemaGo\CinemaGo.Web\Pages\MyCart.razor"
-       
+#line 249 "C:\Users\mukunda\Desktop\New folder\CinemaGo\CinemaGo.Web\Pages\MyCart.razor"
+           
 
-    [CascadingParameter]
-    public EventCallback notify { get; set; }
+        [CascadingParameter]
+        public EventCallback notify { get; set; }
 
-    public List<CartModel> myCart { get; set; }
+public List<CartModel> myCart { get; set; }
+
+
 
     public string paymentMode { get; set; }
     public int subTotal { get; set; }
@@ -133,6 +135,35 @@ using CinemaGo.Web.Services;
     public int Stripeexp_Year { get; set; }
     public string Stripe_Cvc { get; set; }
 
+
+
+
+    private string selectedSeatText = "Select a seat";
+    private (int row, int seat)? selectedSeat;
+    private int seatNumber;
+    private int selectedSEAT;
+    private string takenSeats;
+
+
+    private bool isSeatTaken = false;
+
+
+    void SelectSeat(int row, int seat)
+    {
+        selectedSeat = (row, seat);
+        selectedSeatText = $"Selected Row {row}, Seat {seat}";
+        selectedSEAT = ((row - 1) * 22) + seat;
+    }
+
+
+
+    private bool IsSeatSelected(int row, int seat)
+    {
+        return selectedSeat.HasValue && selectedSeat.Value.row == row && selectedSeat.Value.seat == seat;
+    }
+
+
+
     PaymentModeModel paymentModel = new PaymentModeModel()
     {
         Name = "CashOnDelivery"// default value
@@ -144,8 +175,10 @@ using CinemaGo.Web.Services;
         seatCharges = 1;
         subTotal = 0;
         paymentMode = "CashOnDelivery";
+
         return base.OnInitializedAsync();
     }
+
 
     private async Task RemoveFromCart_Click(CartModel cartItem)
     {
@@ -173,12 +206,12 @@ using CinemaGo.Web.Services;
 
     private async Task Checkout_Click()
     {
-        if(myCart != null && myCart.Count > 0)
+        if (myCart != null && myCart.Count > 0)
         {
 
-            myCart.FirstOrDefault().ShippingCharges =seatCharges;
-            myCart.FirstOrDefault().SubTotal=subTotal;
-            myCart.FirstOrDefault().PaymentMode= paymentMode;
+            myCart.FirstOrDefault().ShippingCharges = seatCharges;
+            myCart.FirstOrDefault().SubTotal = subTotal;
+            myCart.FirstOrDefault().PaymentMode = paymentMode;
 
             var session_userKey = await sessionStorage.GetAsync<string>("userKey");
             if (session_userKey.Success)
@@ -252,6 +285,7 @@ using CinemaGo.Web.Services;
         }
     }
 
+    
 
 #line default
 #line hidden

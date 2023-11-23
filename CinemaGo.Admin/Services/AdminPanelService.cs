@@ -76,6 +76,11 @@ namespace CinemaGo.Admin.Services
             return await httpClient.PostJsonAsync<ProductModel>("api/admin/SaveProduct", newProduct);
         }
 
+        public async Task<bool> UpdateProduct(ProductModel productToUpdate)
+        {
+            return await httpClient.PostJsonAsync<bool>("api/admin/UpdateProduct", productToUpdate);
+        }
+
         public async Task<List<StockModel>> GetProductStock()
         {
             return await httpClient.GetJsonAsync<List<StockModel>>("api/admin/GetProductStock");

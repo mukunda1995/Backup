@@ -46,6 +46,12 @@ namespace CinemaGo.DataModels.CustomModels
         public string orderReference { get; set; }
 
         public int CinemaId { get; set; }
+        public string ProductStatus { get; set; }
+
+
+
+
+
 
 
 

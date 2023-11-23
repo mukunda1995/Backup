@@ -1,6 +1,8 @@
 ﻿@page "/showtime"
 
 @using CinemaGo.DataModels.CustomModels;
+
+
 @using CinemaGo.Web.Services;
 @inject IUserPanelService userPanelService;
 @inject ProtectedSessionStorage sessionStorage;
@@ -63,105 +65,245 @@
     }
 </style>
 
-<div style="min-height:500px;">
-
-    <!--CINEMA NAME-->
-    <div class="column menu">
-        @if (cinemas == null)
-        {
-            <span>loading...</span> }
-        else
-        { <div style="text-align:center;"><h5>Cinema</h5></div>
-            <ul>
-                @foreach (var cinema in cinemas)
-                {
-                    <li style="cursor:pointer;" @onclick="(() => LoadProductByCinema(cinema))">@cinema.Name</li>
-                    //
-                }
-            </ul>}
-    </div>
+<!--START-->
 
 
-    <!--CATEGORIES-->
+<div class="column menu">
+    @if (categories == null)
+    {
+        <span>loading...</span> }
+    else
+    {
+        <div class="mb-3">
+            <h5>Select cinema</h5>
+            <label for="country" class="form-label"> Cinema </label>
+            <select class="form-select" aria-label="Default select example" @bind=cinemaNameTaken>
+                <option value="0" selected>No opiton</option>
+                <option value="GSC Queensbay Mall">GSC Queensbay Mall</option>
+                <option value="TGV Aeon Bukit Mertajam">TGV Aeon Bukit Mertajam</option>
+                <option value="GSC  Sunway Carnival Mall">GSC  Sunway Carnival Mall</option>
+                <option value="LFS Butterworth">LFS Butterworth</option>
 
-    <div class="column menu">
-        @if (categories == null)
-        {
-            <span>loading...</span> }
-        else
-        { <div style="text-align:center;"><h5>category</h5></div>
-            <ul>
-                @foreach (var category in categories)
-                {
-                    <li style="cursor:pointer;" @onclick="(() => LoadProductByCategory(category))">@category.Name</li>
+            </select>
+        </div>
 
-                }
-            </ul>}
-    </div>
+        <div style="text-align:center;"><h5>Select movie category</h5></div>
+        <ul>
+            @foreach (var category in categories)
+            {
+                <li style="cursor:pointer;" @onclick="(() => LoadProductByCategory(category))">@category.Name </li>
 
-
-    <div class="column content">
-        @if (products == null)
-        {
-            <span>Loading...</span> }
-        else 
-        {
-            <div class="container">
-                <div style="padding:5px 0px 0px 0px; border-bottom:1px ridge black; margin-bottom:5px;">
-                    <h5><i><u>@categoryName</u></i></h5>
-                </div>
-                <div class="row">
-                    @foreach (var prod in products)
-                    {
-                        <div class="col-md-4">
-                            <div class="col-md-12 stuff">
-                                <div style="width:100%;border-radius:2px;background-color:white;">
-                                    <button type="button" class="btn" style="border:2px #cff7f9 inset;width: 100%;">@prod.Name</button>
-                                    <img src="http://localhost:36313/@prod.ImageUrl" style="width: 100%; height:150px; border-radius: 1px; ">
-
-                                    <div>
-                                        Price:&nbsp; $@prod.Price &nbsp; &nbsp; <span style="color: red;"> Stock:&nbsp;@prod.Stock</span>
-                                    </div>
-                                    @if (@prod.CartFlag)
-                                    {
-                                        <button type="button" class="btn add-to-cart" style="background-color: #ffd800;" @onclick="(() => AddToCart_Click(prod))">Remove From Cart</button> }
-                                    else
-                                    {
-                                        <button type="button" class="btn add-to-cart" @onclick="(() => AddToCart_Click(prod))">Add to Cart</button>}
-                                </div>
-                            </div>
-                        </div>}
-                </div>
-            </div>}
-    </div>
-
+            }
+        </ul>
+    }
 </div>
 
-@code { 
-    public string cinemaName = string.Empty;
-    public List<CinemaModel> cinemas { get; set; }
-    public List<CategoryModel> categories { get; set; }
-    public List<ProductModel> products { get; set; }
-    public string categoryName = string.Empty;
-    public bool cartFlag = false;
-    public List<CartModel> myCart { get; set; }
 
-    public bool gotMatch1 = false;
-    public bool gotMatch2 = false;
+@if (categories == null)
+{
+    <span>loading...</span> }
+else
+{
+
+    @foreach (var cinema in cinemas)
+    {
+        if (cinemaNameTaken == @cinema.Name)
+        {
+
+            <div style="min-height:700px;">
+                <div class="container">
+
+                    <div class="row">
+                        @foreach (var prod in products)
+                        {
+                            <!-- GSC Queensbay Mall -->
+                            if (@prod.CinemaId == 1 && cinemaNameTaken == "GSC Queensbay Mall")
+                            {
+                                <div class="col-md-4">
+                                    <div class="col-md-12 stuff">
+                                        <div style="width:100%;border-radius:2px;background-color:white;">
+                                            <button type="button" class="btn" style="border:2px #cff7f9 inset;width: 100%;">@prod.Name</button>
+                                            <img src="http://localhost:36313/@prod.ImageUrl" style="width: 100%; height:250px; border-radius: 1px; ">
+
+                                            <div>
+                                                Price:&nbsp; $@prod.Price &nbsp; &nbsp; <span style="color: red;"> Seat:&nbsp;@prod.Stock</span>
+                                                <span style="color: red;">Date:&nbsp;@prod.Date</span>
+                                            </div>
+                                            <div>
+                                                @if (@prod.CinemaId == 1)
+                                                {
+                                                    <h6>Cinema: GSC Queensbay Mall</h6>
+                                                }
+                                                else if (@prod.CinemaId == 2)
+                                                {
+                                                    <h6>Cinema: TGV Aeon Bukit Mertajam</h6>
+                                                }
+                                                else if (@prod.CinemaId == 3)
+                                                {
+                                                    <h6>Cinema: GSC Sunway Carnival Mall</h6>
+                                                }
+                                                else if (@prod.CinemaId == 4)
+                                                {
+                                                    <h6>Cinema: LFS Butterworth</h6>
+                                                }
+                                                else
+                                                { <h1>Error</h1>}
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            <!--TGV Aeon Bukit Mertajam-->
+                            else if (@prod.CinemaId == 2 && cinemaNameTaken == "TGV Aeon Bukit Mertajam")
+                            {
+                                <div class="col-md-4">
+                                    <div class="col-md-12 stuff">
+                                        <div style="width:100%;border-radius:2px;background-color:white;">
+                                            <button type="button" class="btn" style="border:2px #cff7f9 inset;width: 100%;">@prod.Name</button>
+                                            <img src="http://localhost:36313/@prod.ImageUrl" style="width: 100%; height:150px; border-radius: 1px; ">
+
+                                            <div>
+                                                Price:&nbsp; $@prod.Price &nbsp; &nbsp; <span style="color: red;"> Seat:&nbsp;@prod.Stock</span>
+                                                <span style="color: red;">Date:&nbsp;@prod.Date</span>
+                                            </div>
+                                            <div>
+                                                @if (@prod.CinemaId == 1)
+                                                {
+                                                    <h6>Cinema: GSC Queensbay Mall</h6>
+                                                }
+                                                else if (@prod.CinemaId == 2)
+                                                {
+                                                    <h6>Cinema: TGV Aeon Bukit Mertajam</h6>
+                                                }
+                                                else if (@prod.CinemaId == 3)
+                                                {
+                                                    <h6>Cinema: GSC Sunway Carnival Mall</h6>
+                                                }
+                                                else if (@prod.CinemaId == 4)
+                                                {
+                                                    <h6>Cinema: LFS Butterworth</h6>
+                                                }
+                                                else
+                                                { <h1>Error</h1>}
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            <!--GSC Sunway Carnival Mall-->
+                            else if (@prod.CinemaId == 3 && cinemaNameTaken == "GSC  Sunway Carnival Mall")
+                            {
+                                <div class="col-md-4">
+                                    <div class="col-md-12 stuff">
+                                        <div style="width:100%;border-radius:2px;background-color:white;">
+                                            <button type="button" class="btn" style="border:2px #cff7f9 inset;width: 100%;">@prod.Name</button>
+                                            <img src="http://localhost:36313/@prod.ImageUrl" style="width: 100%; height:150px; border-radius: 1px; ">
+
+                                            <div>
+                                                Price:&nbsp; $@prod.Price &nbsp; &nbsp; <span style="color: red;"> Seat:&nbsp;@prod.Stock</span>
+                                                <span style="color: red;">Date:&nbsp;@prod.Date</span>
+                                            </div>
+                                            <div>
+                                                @if (@prod.CinemaId == 1)
+                                                {
+                                                    <h6>Cinema: GSC Queensbay Mall</h6>
+                                                }
+                                                else if (@prod.CinemaId == 2)
+                                                {
+                                                    <h6>Cinema: TGV Aeon Bukit Mertajam</h6>
+                                                }
+                                                else if (@prod.CinemaId == 3)
+                                                {
+                                                    <h6>Cinema: GSC Sunway Carnival Mall</h6>
+                                                }
+                                                else if (@prod.CinemaId == 4)
+                                                {
+                                                    <h6>Cinema: LFS Butterworth</h6>
+                                                }
+                                                else
+                                                { <h1>Error</h1>}
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            <!--LFS Butterworth-->
+                            else if (@prod.CinemaId == 4 && cinemaNameTaken == "LFS Butterworth")
+                            {
+                                <div class="col-md-4">
+                                    <div class="col-md-12 stuff">
+                                        <div style="width:100%;border-radius:2px;background-color:white;">
+                                            <button type="button" class="btn" style="border:2px #cff7f9 inset;width: 100%;">@prod.Name</button>
+                                            <img src="http://localhost:36313/@prod.ImageUrl" style="width: 100%; height:150px; border-radius: 1px; ">
+
+                                            <div>
+                                                Price:&nbsp; $@prod.Price &nbsp; &nbsp; <span style="color: red;"> Seat:&nbsp;@prod.Stock</span>
+                                                <span style="color: red;">Date:&nbsp;@prod.Date</span>
+                                            </div>
+                                            <div>
+                                                @if (@prod.CinemaId == 1)
+                                                {
+                                                    <h6>Cinema: GSC Queensbay Mall</h6>
+                                                }
+                                                else if (@prod.CinemaId == 2)
+                                                {
+                                                    <h6>Cinema: TGV Aeon Bukit Mertajam</h6>
+                                                }
+                                                else if (@prod.CinemaId == 3)
+                                                {
+                                                    <h6>Cinema: GSC Sunway Carnival Mall</h6>
+                                                }
+                                                else if (@prod.CinemaId == 4)
+                                                {
+                                                    <h6>Cinema: LFS Butterworth</h6>
+                                                }
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+
+            </div>
 
 
+
+
+        }
+
+    }
+
+}
+
+
+<!--END -->
+
+
+
+
+
+
+
+@code{
     [CascadingParameter]
     public EventCallback notify { get; set; }
 
+    public string cinemaNameTaken = " ";
 
-
-
-
-
-    //gotMatch1 = true;
-    //gotMatch2 = true;
-
-
+    public List<CategoryModel> categories { get; set; }
+    public string categoryName = string.Empty;
+    public List<ProductModel> products { get; set; }
+    public bool cartFlag = false;
+    public List<CartModel> myCart { get; set; }
+    public string cinemaName = string.Empty;
+    public List<CinemaModel> cinemas { get; set; }
 
 
 
@@ -170,20 +312,8 @@
         await GetCatgories();
         await GetCinemas();
 
-    }
-
-    private async Task LoadProductByCinema(CinemaModel cinema)
-    {
-        cinemaName = cinema.Name;
-        products = await userPanelService.GetProductByCinemaId(cinema.Id);
-        if (products != null && products.Count > 0)
-        {
-            
-            await updateCartText();
-        }
 
     }
-
     private async Task GetCinemas()
     {
         cinemas = await userPanelService.GetCinemas();
@@ -195,9 +325,17 @@
 
 
     }
+    private async Task LoadProductByCinema(CinemaModel cinema)
+    {
+        cinemaName = cinema.Name;
+        products = await userPanelService.GetProductByCinemaId(cinema.Id);
+        if (products != null && products.Count > 0)
+        {
 
+            await updateCartText();
+        }
 
-
+    }
 
     private async Task GetCatgories()
     {
@@ -210,19 +348,6 @@
 
 
     }
-
-    private async Task LoadProductByCategory(CategoryModel category)
-    {
-        categoryName = category.Name;
-        products = await userPanelService.GetProductByCategoryId(category.Id);
-        if (products != null && products.Count > 0)
-        {
-            await updateCartText();
-            
-        }
-
-    }
-
     private async Task AddToCart_Click(ProductModel productClicked)
     {
         cartFlag = true;
@@ -257,6 +382,8 @@
                 cm.ProductImage = productClicked.ImageUrl;
 
                 cm.Price = Convert.ToInt32(productClicked.Price);
+
+
 
                 myCart.Add(cm);
 
@@ -331,6 +458,17 @@
         }
     }
 
+    private async Task LoadProductByCategory(CategoryModel category)
+    {
+        categoryName = category.Name;
+        products = await userPanelService.GetProductByCategoryId(category.Id);
+        if (products != null && products.Count > 0)
+        {
+            await updateCartText();
+
+        }
+
+    }
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
@@ -341,7 +479,8 @@
                 cartFlag = true;
             }
         }
-    } 
     }
+
+}
 
 

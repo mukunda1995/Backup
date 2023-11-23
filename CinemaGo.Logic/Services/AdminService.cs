@@ -202,6 +202,33 @@ namespace CinemaGo.Logic.Services
             }
             return _productList;
         }
+        public bool UpdateProduct(ProductModel productToUpdate)
+        {
+            bool flag = false;
+            
+            var _product = _dBContext.Products.Where(x => x.Id == productToUpdate.Id).First();
+            if (_product != null)
+            {
+                _product.Name = productToUpdate.Name;
+                _product.Price = productToUpdate.Price;
+                _product.Stock = productToUpdate.Stock;
+                
+                _product.Description = productToUpdate.Description;
+                _product.Date = productToUpdate.Date;
+                _product.Hour = productToUpdate.Hour;
+                _product.Minute = productToUpdate.Minute;
+                _product.Language = productToUpdate.Language;
+                _product.ReleaseDate = productToUpdate.ReleaseDate;
+                _product.RunningTime = productToUpdate.RunningTime;
+                _product.Status = productToUpdate.Status;
+                
+
+                _dBContext.Products.Update(_product);
+                _dBContext.SaveChanges();
+                flag = true;
+            }
+            return flag;
+        }
 
         public bool DeleteProduct(ProductModel productToDelete)
         {

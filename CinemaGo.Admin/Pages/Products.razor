@@ -9,7 +9,7 @@
     .modal {
         position: fixed;
         z-index: 1;
-        padding-top: 100px;
+        padding-top: 30px;
         left: 0;
         top: 0;
         width: 100%;
@@ -174,10 +174,10 @@ else
 
                 </div>
             </EditForm>
-        
+
         </div>
         <div class="card-body">
-            @if (productList == null) 
+            @if (productList == null)
             {
                 <p><em>Loading...</em></p>
             }
@@ -202,7 +202,7 @@ else
                             <th>RunningTime</th>
                             <th>Status</th>
                             <th>ImageUrl</th>
-                            @*<th style ="width : 80px;">Edit?</th>*@
+                            <th style="width : 80px;">Edit?</th>
                             <th style="width:80px;">Delete?</th>
                         </tr>
                     </thead>
@@ -210,29 +210,29 @@ else
 
                         @foreach (var (index, prod) in productList.Select((prod, i) => (i + 1, prod)))
                         {
-                        <tr>
-                            <td>@index</td>
-                            <td>@prod.Name</td>
-                            <td>@prod.Price</td>
-                            <td>@prod.Stock</td>
-                            <td>@prod.CategoryName</td>
-                            <td>@prod.CinemaName</td>
-                            <td>@prod.Description</td>
-                            <td>@prod.Date</td>
-                            <td>@prod.Hour</td>
-                            <td>@prod.Minute</td>
-                            <td>@prod.TrailerUrl</td>
-                            <td>@prod.Language</td>
-                            <td>@prod.ReleaseDate</td>
-                            <td>@prod.RunningTime</td>
-                            <td>@prod.Status</td>
-                            
-                            <td><img src="http://localhost:36313/@prod.ImageUrl" style="width: 100%; height:150px; border-radius: 1px; "></td>
-                            
+                            <tr>
+                                <td>@index</td>
+                                <td>@prod.Name</td>
+                                <td>@prod.Price</td>
+                                <td>@prod.Stock</td>
+                                <td>@prod.CategoryName</td>
+                                <td>@prod.CinemaName</td>
+                                <td>@prod.Description</td>
+                                <td>@prod.Date</td>
+                                <td>@prod.Hour</td>
+                                <td>@prod.Minute</td>
+                                <td>@prod.TrailerUrl</td>
+                                <td>@prod.Language</td>
+                                <td>@prod.ReleaseDate</td>
+                                <td>@prod.RunningTime</td>
+                                <td>@prod.Status</td>
 
-                            @*<td> <input type ="button" class="btn btn-primary" value="Edit" @onclick="(()=> EditButtonClick(prod))"/></td>*@
-                            <td> <input type="button" class="btn btn-primary" value="Delete" @onclick="(()=> DeleteButtonClick(prod))" /></td>
-                        </tr>
+                                <td><img src="http://localhost:36313/@prod.ImageUrl" style="width: 100%; height:150px; border-radius: 1px; "></td>
+
+
+                                <td> <input type="button" class="btn btn-primary" value="Edit" @onclick="(()=> EditButtonClick(prod))" /></td>
+                                <td> <input type="button" class="btn btn-primary" value="Delete" @onclick="(()=> DeleteButtonClick(prod))" /></td>
+                            </tr>
 
                         }
                     </tbody>
@@ -242,8 +242,87 @@ else
         </div>
     </div>
 }
+@if (showEditPopup == true)
+{
+    <div class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5>Edit Movie</h5>
+                <span class="close" @onclick="ToggleEditPopup">&times;</span>
+            </div>
+            <div class="modal-body">
+                <EditForm Model="@productToUpdate" OnValidSubmit="UpdateProduct">
+                    <DataAnnotationsValidator />
+                    <div class="form-row">
+                        <div class="form-group col-5">
+                            <label>Name :</label>
+                            <InputText @bind-Value="productToUpdate.Name" class="form-control" />
+                            <ValidationMessage For="@(() => productToUpdate.Name)" />
+                        </div>
+                        <div class="form-group col-5">
+                            <label>Price :</label>
+                            <InputNumber @bind-Value="productToUpdate.Price" class="form-control" />
+                            <ValidationMessage For="@(() => productToUpdate.Price)" />
+                        </div>
+                        <div class="form-group col-5">
+                            <label>Stock :</label>
+                            <InputNumber @bind-Value="productToUpdate.Stock" class="form-control" />
+                            <ValidationMessage For="@(() => productToUpdate.Stock)" />
+                        </div>
+                        <div class="form-group col-5">
+                            <label>Description :</label>
+                            <InputText @bind-Value="productToUpdate.Description" class="form-control" />
+                            <ValidationMessage For="@(() => productToUpdate.Description)" />
+                        </div>
+                        <div class="form-group col-5">
+                            <label>Date :</label>
+                            <InputText @bind-Value="productToUpdate.Date" class="form-control" />
+                            <ValidationMessage For="@(() => productToUpdate.Date)" />
+                        </div>
+                        <div class="form-group col-5">
+                            <label>Hour :</label>
+                            <InputNumber @bind-Value="productToUpdate.Hour" class="form-control" />
+                            <ValidationMessage For="@(() => productToUpdate.Hour)" />
+                        </div>
+                        <div class="form-group col-5">
+                            <label>Minute :</label>
+                            <InputNumber @bind-Value="productToUpdate.Minute" class="form-control" />
+                            <ValidationMessage For="@(() => productToUpdate.Minute)" />
+                        </div>
+                        <div class="form-group col-5">
+                            <label>Language :</label>
+                            <InputText @bind-Value="productToUpdate.Language" class="form-control" />
+                            <ValidationMessage For="@(() => productToUpdate.Language)" />
+                        </div>
+                        <div class="form-group col-5">
+                            <label>ReleaseDate :</label>
+                            <InputText @bind-Value="productToUpdate.ReleaseDate" class="form-control" />
+                            <ValidationMessage For="@(() => productToUpdate.ReleaseDate)" />
+                        </div>
+                        <div class="form-group col-5">
+                            <label>RunningTime :</label>
+                            <InputText @bind-Value="productToUpdate.RunningTime" class="form-control" />
+                            <ValidationMessage For="@(() => productToUpdate.RunningTime)" />
+                        </div>
+                        <div class="form-group col-5">
+                            <label>Status :</label>
+                            <InputText @bind-Value="productToUpdate.Status" class="form-control" />
+                            <ValidationMessage For="@(() => productToUpdate.Status)" />
+                        </div>
+                        
 
-@if (showDeletePopup == true) 
+                    </div>
+                </EditForm>
+            </div>
+            <div class="modal-footer">
+                <input type="button" class="btn btn-primary" value="Update" @onclick="UpdateProduct" />
+                <input type="button" class="btn btn-primary" value="Cancel" @onclick="ToggleEditPopup" />
+            </div>
+        </div>
+    </div>
+}
+
+@if (showDeletePopup == true)
 {
     <div class="modal">
         <div class="modal-content">
@@ -262,7 +341,7 @@ else
     </div>
 }
 
-@if (successPopup == true) 
+@if (successPopup == true)
 {
     <div class="modal">
         <div class="modal-content">
@@ -335,6 +414,23 @@ else
         await GetProducts();
         ClearForm();
     }
+    private async Task UpdateProduct()
+    {
+        bool flag = await adminPanelService.UpdateProduct(productToUpdate);
+        ToggleEditPopup();
+        if (flag)
+        {
+            Message = "Product Updated Successfully !";
+        }
+        else
+        {
+            Message = "Product Not Updated Try Again!";
+        }
+
+        ToggleSuccessPopup();
+        productToUpdate = new ProductModel();
+        await GetProducts();
+    }
 
     private async Task DeleteProduct()
     {
@@ -353,6 +449,16 @@ else
         ToggleSuccessPopup();
         productToDelete = new ProductModel();
         await GetProducts();
+    }
+    private void EditButtonClick(ProductModel _productToUpdate)
+    {
+        productToUpdate = _productToUpdate;
+        ToggleEditPopup();
+    }
+
+    private void ToggleEditPopup()
+    {
+        showEditPopup = showEditPopup == true ? false : true;
     }
 
     private void DeleteButtonClick(ProductModel _productToDelete)
@@ -378,7 +484,7 @@ else
 
     private void CategoryClicked(ChangeEventArgs categoryEvent)
     {
-        if (!string.IsNullOrEmpty(Convert.ToString (categoryEvent.Value)))
+        if (!string.IsNullOrEmpty(Convert.ToString(categoryEvent.Value)))
         {
             categoryId = Convert.ToInt32(categoryEvent.Value);
             productModel.CategoryId = categoryId;
@@ -402,7 +508,7 @@ else
     {
         selectedFiles = e.GetMultipleFiles();
         productModel.FileName = string.Empty;
-        foreach(var imageFile in selectedFiles)
+        foreach (var imageFile in selectedFiles)
         {
             var resizedImage = await imageFile.RequestImageFileAsync("image/jpg", 100, 100);
             var buffer = new byte[resizedImage.Size];

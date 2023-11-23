@@ -25,6 +25,7 @@ namespace CinemaGo.Admin.Services
         Task<List<ProductModel>> GetProducts();
         Task<bool> DeleteProduct(ProductModel productToDelete);
         Task<ProductModel> SaveProduct(ProductModel newProduct);
+        Task<bool> UpdateProduct(ProductModel productToUpdate);
 
         Task<List<StockModel>> GetProductStock();
 

@@ -97,7 +97,7 @@ using CinemaGo.DataModels.CustomModels;
 #line hidden
 #nullable disable
 #nullable restore
-#line 4 "C:\Users\mukunda\Desktop\New folder\CinemaGo\CinemaGo.Web\Pages\Showtime.razor"
+#line 6 "C:\Users\mukunda\Desktop\New folder\CinemaGo\CinemaGo.Web\Pages\Showtime.razor"
 using CinemaGo.Web.Services;
 
 #line default
@@ -112,32 +112,20 @@ using CinemaGo.Web.Services;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 140 "C:\Users\mukunda\Desktop\New folder\CinemaGo\CinemaGo.Web\Pages\Showtime.razor"
-        
-    public string cinemaName = string.Empty;
-    public List<CinemaModel> cinemas { get; set; }
-    public List<CategoryModel> categories { get; set; }
-    public List<ProductModel> products { get; set; }
-    public string categoryName = string.Empty;
-    public bool cartFlag = false;
-    public List<CartModel> myCart { get; set; }
-
-    public bool gotMatch1 = false;
-    public bool gotMatch2 = false;
-
-
+#line 294 "C:\Users\mukunda\Desktop\New folder\CinemaGo\CinemaGo.Web\Pages\Showtime.razor"
+      
     [CascadingParameter]
     public EventCallback notify { get; set; }
 
+    public string cinemaNameTaken = " ";
 
-
-
-
-
-    //gotMatch1 = true;
-    //gotMatch2 = true;
-
-
+    public List<CategoryModel> categories { get; set; }
+    public string categoryName = string.Empty;
+    public List<ProductModel> products { get; set; }
+    public bool cartFlag = false;
+    public List<CartModel> myCart { get; set; }
+    public string cinemaName = string.Empty;
+    public List<CinemaModel> cinemas { get; set; }
 
 
 
@@ -146,20 +134,8 @@ using CinemaGo.Web.Services;
         await GetCatgories();
         await GetCinemas();
 
-    }
-
-    private async Task LoadProductByCinema(CinemaModel cinema)
-    {
-        cinemaName = cinema.Name;
-        products = await userPanelService.GetProductByCinemaId(cinema.Id);
-        if (products != null && products.Count > 0)
-        {
-            
-            await updateCartText();
-        }
 
     }
-
     private async Task GetCinemas()
     {
         cinemas = await userPanelService.GetCinemas();
@@ -171,9 +147,17 @@ using CinemaGo.Web.Services;
 
 
     }
+    private async Task LoadProductByCinema(CinemaModel cinema)
+    {
+        cinemaName = cinema.Name;
+        products = await userPanelService.GetProductByCinemaId(cinema.Id);
+        if (products != null && products.Count > 0)
+        {
 
+            await updateCartText();
+        }
 
-
+    }
 
     private async Task GetCatgories()
     {
@@ -186,19 +170,6 @@ using CinemaGo.Web.Services;
 
 
     }
-
-    private async Task LoadProductByCategory(CategoryModel category)
-    {
-        categoryName = category.Name;
-        products = await userPanelService.GetProductByCategoryId(category.Id);
-        if (products != null && products.Count > 0)
-        {
-            await updateCartText();
-            
-        }
-
-    }
-
     private async Task AddToCart_Click(ProductModel productClicked)
     {
         cartFlag = true;
@@ -233,6 +204,8 @@ using CinemaGo.Web.Services;
                 cm.ProductImage = productClicked.ImageUrl;
 
                 cm.Price = Convert.ToInt32(productClicked.Price);
+
+
 
                 myCart.Add(cm);
 
@@ -307,6 +280,17 @@ using CinemaGo.Web.Services;
         }
     }
 
+    private async Task LoadProductByCategory(CategoryModel category)
+    {
+        categoryName = category.Name;
+        products = await userPanelService.GetProductByCategoryId(category.Id);
+        if (products != null && products.Count > 0)
+        {
+            await updateCartText();
+
+        }
+
+    }
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
@@ -317,8 +301,8 @@ using CinemaGo.Web.Services;
                 cartFlag = true;
             }
         }
-    } 
-    
+    }
+
 
 #line default
 #line hidden

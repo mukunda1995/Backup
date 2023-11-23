@@ -119,7 +119,7 @@ using System.IO;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 283 "C:\Users\mukunda\Desktop\New folder\CinemaGo\CinemaGo.Admin\Pages\Products.razor"
+#line 362 "C:\Users\mukunda\Desktop\New folder\CinemaGo\CinemaGo.Admin\Pages\Products.razor"
  
     [CascadingParameter]
     public EventCallback notify { get; set; }
@@ -175,6 +175,23 @@ using System.IO;
         await GetProducts();
         ClearForm();
     }
+    private async Task UpdateProduct()
+    {
+        bool flag = await adminPanelService.UpdateProduct(productToUpdate);
+        ToggleEditPopup();
+        if (flag)
+        {
+            Message = "Product Updated Successfully !";
+        }
+        else
+        {
+            Message = "Product Not Updated Try Again!";
+        }
+
+        ToggleSuccessPopup();
+        productToUpdate = new ProductModel();
+        await GetProducts();
+    }
 
     private async Task DeleteProduct()
     {
@@ -193,6 +210,16 @@ using System.IO;
         ToggleSuccessPopup();
         productToDelete = new ProductModel();
         await GetProducts();
+    }
+    private void EditButtonClick(ProductModel _productToUpdate)
+    {
+        productToUpdate = _productToUpdate;
+        ToggleEditPopup();
+    }
+
+    private void ToggleEditPopup()
+    {
+        showEditPopup = showEditPopup == true ? false : true;
     }
 
     private void DeleteButtonClick(ProductModel _productToDelete)
@@ -218,7 +245,7 @@ using System.IO;
 
     private void CategoryClicked(ChangeEventArgs categoryEvent)
     {
-        if (!string.IsNullOrEmpty(Convert.ToString (categoryEvent.Value)))
+        if (!string.IsNullOrEmpty(Convert.ToString(categoryEvent.Value)))
         {
             categoryId = Convert.ToInt32(categoryEvent.Value);
             productModel.CategoryId = categoryId;
@@ -242,7 +269,7 @@ using System.IO;
     {
         selectedFiles = e.GetMultipleFiles();
         productModel.FileName = string.Empty;
-        foreach(var imageFile in selectedFiles)
+        foreach (var imageFile in selectedFiles)
         {
             var resizedImage = await imageFile.RequestImageFileAsync("image/jpg", 100, 100);
             var buffer = new byte[resizedImage.Size];

@@ -111,7 +111,7 @@ using CinemaGo.Web.Services;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 89 "C:\Users\mukunda\Desktop\New folder\CinemaGo\CinemaGo.Web\Components\DisplayAllContent.razor"
+#line 94 "C:\Users\mukunda\Desktop\New folder\CinemaGo\CinemaGo.Web\Components\DisplayAllContent.razor"
        
 
     [CascadingParameter]

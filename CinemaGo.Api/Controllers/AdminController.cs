@@ -141,6 +141,15 @@ namespace CinemaGo.Api.Controllers
             return Ok(data);
         }
 
+        [HttpPost]
+        [Route("UpdateProduct")]
+
+        public IActionResult UpdateProduct(ProductModel productToUpdate)
+        {
+            var data = _adminService.UpdateProduct(productToUpdate);
+            return Ok(data);
+        }
+
         [HttpGet]
         [Route("GetProductStock")]
 

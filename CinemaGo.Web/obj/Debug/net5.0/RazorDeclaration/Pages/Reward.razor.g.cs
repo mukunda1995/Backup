@@ -112,7 +112,7 @@ using CinemaGo.Web.Services;
         }
         #pragma warning restore 1998
 #nullable restore
-#line 93 "C:\Users\mukunda\Desktop\New folder\CinemaGo\CinemaGo.Web\Pages\Reward.razor"
+#line 95 "C:\Users\mukunda\Desktop\New folder\CinemaGo\CinemaGo.Web\Pages\Reward.razor"
        
 
     [CascadingParameter]

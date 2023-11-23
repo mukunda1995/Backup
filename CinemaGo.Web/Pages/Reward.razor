@@ -16,7 +16,9 @@
         border: 0px;
         width: 20%;
         height: 1em;
+
     }
+     
 </style>
 <h3>Reward</h3>
 
@@ -25,9 +27,9 @@
         <tr>
             <td>Cinema Type</td>
             <td>
-                <div style=" text-align : left; margin:0px;">
+                <div style=" text-align : left; margin:0px; ">
                     <EditForm Model="cinematypeModel">
-                        <InputRadioGroup @bind-Value="cinematypeModel.Name">
+                        <InputRadioGroup @bind-Value="cinematypeModel.Name" >
                             @foreach (var option in rdOptions)
                             {
                                 <InputRadio Value="option" /> @option <br />

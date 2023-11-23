@@ -19,17 +19,20 @@
         padding-right: 10px;
     }
 
-    .cart-page{
-        margin:20px auto;
+    .cart-page {
+        margin: 20px auto;
     }
+
     table {
         width: 100%;
         border-collapse: collapse;
     }
+
     .cart-info {
         display: flex;
         flex-wrap: wrap;
     }
+
     th {
         text-align: left;
         padding: 5px;
@@ -38,76 +41,83 @@
         font-weight: normal;
     }
 
-    td{
-        padding:10px  5px;
+    td {
+        padding: 10px 5px;
     }
-        td input{
-            width:40px;
+
+        td input {
+            width: 40px;
             height: 30px;
-            padding:5px;
+            padding: 5px;
         }
-        td a{
-            color:#ff523b;
-            font-size:12px;
+
+        td a {
+            color: #ff523b;
+            font-size: 12px;
         }
 
         td img {
-            width : 80px;
+            width: 80px;
             height: 80px;
-            margin-right:10px;
+            margin-right: 10px;
         }
-    .total-price{
-        display:flex;
-        justify-content:  flex-end;
+
+    .total-price {
+        display: flex;
+        justify-content: flex-end;
     }
+
         .total-price table {
             border-top: 3px solid #ff5336;
             width: 100%;
             max-width: 408px;
         }
-    td:last-child{
-        text-align:right;
+
+    td:last-child {
+        text-align: right;
     }
 
-    th:last-child{
-        text-align :right;
+    th:last-child {
+        text-align: right;
     }
-
 </style>
 
 <style>
-    input[type=radio]{
+    input[type=radio] {
         border: 0px;
         width: 20%;
         height: 1em;
     }
 </style>
 
-<div style="padding:0px 0px 0px 10px; text-align:right;">
-    @if (@userName != null && @userEmail != null) 
-    {
-        <span>
-            <span style="border:1px ridge #ff523b; background-color:#ff6a00; border-radius:10px; color:#ffffff; padding:3px;">My Cart</span>
-            &nbsp;&nbsp;
-            <b>
-                Name : @userName
-                &nbsp;&nbsp;
-                Email : @userEmail
-                &nbsp;&nbsp;
-            </b>
-        </span>
-    }
-    @if (@myCart != null && @myCart.Count > 0) 
-    {
-        <button type="button" value="Clear" class="btn btn-primary" @onclick="@Clear_Click">Clear</button>
-    }
 
-</div>
 
-<div class="small-container cart-page">
-    @if (@myCart != null && @myCart.Count > 0)
-    {
-        <table>
+
+    <div style="padding:0px 0px 0px 10px; text-align:right;">
+        @if (@userName != null && @userEmail != null)
+        {
+            <span>
+                <span style="border:1px ridge #ff523b; background-color:#ff6a00; border-radius:10px; color:#ffffff; padding:3px;">My Cart</span>
+                &nbsp;&nbsp;
+                <b>
+                    Name : @userName
+                    &nbsp;&nbsp;
+                    Email : @userEmail
+                    &nbsp;&nbsp;
+                </b>
+            </span>
+        }
+        @if (@myCart != null && @myCart.Count > 0)
+        {
+            <button type="button" value="Clear" class="btn btn-primary" @onclick="@Clear_Click">Clear</button>
+        }
+
+    </div>
+
+    <div class="small-container cart-page">
+        @if (@myCart != null && @myCart.Count > 0)
+        {
+            <table>
             <tr>
                 <th>Movie</th>
 
@@ -118,60 +128,64 @@
                 <th>Seats</th>
 
                 <th>Subtotal</th>
+
+                <th>Status</th>
+
             </tr>
-            @foreach (var cart in myCart) 
+            @foreach (var cart in myCart)
             {
-                 <tr>
+                <tr>
                     <td>
-                         <div class="cart-info">
+                        <div class="cart-info">
                             <img src="http://localhost:36313/@cart.ProductImage" alt=" Product Photo" />
                             <div>
                                 <p>@cart.ProductName</p>
-                                
-                            </div>
-                         </div>
-                     </td>
-                     <td><a @onclick="(() => RemoveFromCart_Click(cart))" style="cursor:pointer;">Remove</a></td>
-                     <td>$@cart.Price</td>
-                     <td><input type="number" @bind ="cart.Quantity" min="1"  max="@cart.AvailableStock" @onclick="@onQuantityChange" style="width:60px;" /></td>
-                     <td>$@(cart.Price*cart.Quantity).00</td>
-                 </tr>
-             }
-        </table>
 
-        <div class="total-price">
-            <table>
-                <tr>
-                    <td>Subtotal</td>
-                    <td>
-                        $@subTotal.00
-                    </td>
-                </tr>
-                <tr>
-                    <td>Seat Charges</td>
-                    <td>$@seatCharges.00</td>
-                </tr>
-                <tr>
-                    <td>Total</td>
-                    <td>@finalTotal.00</td>
-                </tr>
-                
-                <tr>
-                    <td>Payment Mode</td>
-                    <td>
-                        <div style=" text-align : left; margin:0px;">
-                            <EditForm Model="paymentModel">
-                                <InputRadioGroup @bind-Value ="paymentModel.Name">
-                                    @foreach (var option in rdOptions) 
-                                    {
-                                    <InputRadio Value="option" /> @option <br />
-                                    }
-                                </InputRadioGroup>
-                            </EditForm>
+                            </div>
                         </div>
                     </td>
+                    <td><a @onclick="(() => RemoveFromCart_Click(cart))" style="cursor:pointer;">Remove</a></td>
+                    <td>$@cart.Price</td>
+                    <td><input type="number" @bind="cart.Quantity" min="1" max="@cart.AvailableStock" @onclick="@onQuantityChange" style="width:60px;" /></td>
+                    <td>$@(cart.Price*cart.Quantity).00</td>
+                    <td>@cart.ProductStatus</td>
                 </tr>
-                
+            }
+        </table>
+
+            <div class="total-price">
+                <table>
+                    <tr>
+                        <td>Subtotal</td>
+                        <td>
+                            $@subTotal.00
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Seat Charges</td>
+                        <td>$@seatCharges.00</td>
+                    </tr>
+                    <tr>
+                        <td>Total</td>
+                        <td>@finalTotal.00</td>
+                    </tr>
+
+                    <tr>
+                        <td>Payment Mode</td>
+                        <td>
+                            <div style=" text-align : left; margin:0px;">
+                                <EditForm Model="paymentModel">
+                                    <InputRadioGroup @bind-Value="paymentModel.Name">
+                                        @foreach (var option in rdOptions)
+                                                {
+                                            <InputRadio Value="option" /> @option <br />
+                                                }
+                                    </InputRadioGroup>
+                                </EditForm>
+                            </div>
+                        </td>
+                    </tr>
+
                     <td>
                         @if (paymentModel.Name == "Stripe")
                         {
@@ -213,31 +227,33 @@
                             </div>
                         }
                     </td>
-                <tr>            
-                    <td></td>
-                    <td>
-                        <button type="button" value="Checkout" class="btn btn-primary" @onclick ="@Checkout_Click">Checkout</button>
-                    </td>
-                </tr>
-            </table>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <button type="button" value="Checkout" class="btn btn-primary" @onclick="@Checkout_Click">Checkout</button>
+                        </td>
+                    </tr>
+                </table>
 
-        </div>
-    }
-    else
-    {
-        <hr/>
-        <div style="text-align :center;">
-            <img  src="./images/empty_cart.png"/>
-        </div>
-    }       
+            </div>
+        }
+        else
+        {
+            <hr />
+            <div style="text-align :center;">
+                <img src="./images/empty_cart.png" />
+            </div>
+        }
 
-</div>
-@code {
+    </div>
+    @code {
 
-    [CascadingParameter]
-    public EventCallback notify { get; set; }
+        [CascadingParameter]
+        public EventCallback notify { get; set; }
 
-    public List<CartModel> myCart { get; set; }
+public List<CartModel> myCart { get; set; }
+
+
 
     public string paymentMode { get; set; }
     public int subTotal { get; set; }
@@ -252,6 +268,35 @@
     public int Stripeexp_Year { get; set; }
     public string Stripe_Cvc { get; set; }
 
+
+
+
+    private string selectedSeatText = "Select a seat";
+    private (int row, int seat)? selectedSeat;
+    private int seatNumber;
+    private int selectedSEAT;
+    private string takenSeats;
+
+
+    private bool isSeatTaken = false;
+
+
+    void SelectSeat(int row, int seat)
+    {
+        selectedSeat = (row, seat);
+        selectedSeatText = $"Selected Row {row}, Seat {seat}";
+        selectedSEAT = ((row - 1) * 22) + seat;
+    }
+
+
+
+    private bool IsSeatSelected(int row, int seat)
+    {
+        return selectedSeat.HasValue && selectedSeat.Value.row == row && selectedSeat.Value.seat == seat;
+    }
+
+
+
     PaymentModeModel paymentModel = new PaymentModeModel()
     {
         Name = "CashOnDelivery"// default value
@@ -263,8 +308,10 @@
         seatCharges = 1;
         subTotal = 0;
         paymentMode = "CashOnDelivery";
+
         return base.OnInitializedAsync();
     }
+
 
     private async Task RemoveFromCart_Click(CartModel cartItem)
     {
@@ -292,12 +339,12 @@
 
     private async Task Checkout_Click()
     {
-        if(myCart != null && myCart.Count > 0)
+        if (myCart != null && myCart.Count > 0)
         {
 
-            myCart.FirstOrDefault().ShippingCharges =seatCharges;
-            myCart.FirstOrDefault().SubTotal=subTotal;
-            myCart.FirstOrDefault().PaymentMode= paymentMode;
+            myCart.FirstOrDefault().ShippingCharges = seatCharges;
+            myCart.FirstOrDefault().SubTotal = subTotal;
+            myCart.FirstOrDefault().PaymentMode = paymentMode;
 
             var session_userKey = await sessionStorage.GetAsync<string>("userKey");
             if (session_userKey.Success)
@@ -371,4 +418,4 @@
         }
     }
 
-}
+    }
